@@ -48,13 +48,13 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if($result > 0){
-        echo "このユーザーネームはすでに使われています。";
+        echo "このユーザー名はすでに使われています。";
         exit; 
     }else {
         $sql = "INSERT INTO users(id, username, password) VALUES(NULL, :username, :password)";
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(":username", $_POST['username'], PDO::PARAM_STR);
-        $stmt->bindParam(":password", $_POST['password'], PDO::PARAM_STR);
+        $stmt1->bindParam(":username", $_POST['username'], PDO::PARAM_STR);
+        $stmt2->bindParam(":password", $_POST['password'], PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
