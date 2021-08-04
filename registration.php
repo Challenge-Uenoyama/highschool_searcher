@@ -41,19 +41,29 @@ if (!preg_match('/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}+\z/i/u', $_POST['passwor
 
 try {
     $dbh = db_open();
-    $sql = "INSERT INTO users(id, username, password) VALUES(NULL, :username, :password)";
+    $sql = "SELECT * FROM users WHERE username = :username";
     $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(":username", $_POST['username'], PDO::PARAM_STR);
-    $stmt->bindParam(":password", $_POST['password'], PDO::PARAM_STR);
-    $stmt->execute();
+    // $stmt ->bindParam(array(':username'=> $username));
+    $stmt ->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if($result > 0){
+        echo "このユーザーネームはすでに使われています。";
+        exit; 
+    }else {
+        $sql = "INSERT INTO users(id, username, password) VALUES(NULL, :username, :password)";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(":username", $_POST['username'], PDO::PARAM_STR);
+        $stmt->bindParam(":password", $_POST['password'], PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     if(!$result) {
         echo "書き込みに失敗しました。。";
         exit;
     }
 
-    //test書き込み
 }catch(PDOException $e) {
     echo "エラー!:" . str2html($e->getMessage());
 }
